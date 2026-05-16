@@ -52,6 +52,8 @@ export function parseArenaDeckExport(rawText: string, cardCatalog: CardData[]): 
             resolvedName: match.card?.name,
             matchQuality: match.matchQuality,
             typeLine: match.card?.typeLine,
+            manaCost: match.card?.manaCost,
+            colors: match.card?.colors,
         };
     });
 

@@ -19,6 +19,8 @@ export interface DeckSlot {
     resolvedName?: string;
     matchQuality?: 'exact' | 'alias' | 'normalized' | 'fuzzy' | 'unknown';
     typeLine?: string;
+    manaCost?: string;
+    colors?: string[];
 }
 
 export interface ArenaDeckLine {
