@@ -1,6 +1,10 @@
 import { ArenaDeckLine, CardData, ParsedDeck, ParseResult } from '../types';
+import { resolveCardName } from './cardNameMapper';
 
 const countLineRegex = /^(\d+)\s+x?\s*(.+)$/i;
+const arenaExportSuffixRegex = /\s*\([^)]*\)\s*\d+\s*$/;
+
+const stripArenaExportSuffix = (value: string): string => value.replace(arenaExportSuffixRegex, '').trim();
 
 export function parseArenaDeckExport(rawText: string, cardCatalog: CardData[]): ParseResult {
     let lines = rawText.split(/\r?\n/);
@@ -25,25 +29,29 @@ export function parseArenaDeckExport(rawText: string, cardCatalog: CardData[]): 
         }
 
         const count = Number(match[1]);
-        const name = match[2].trim();
+        const rawName = match[2].trim();
+        const name = stripArenaExportSuffix(rawName);
         if (!name) {
             warnings.push(`Missing card name in line: "${line}"`);
             continue;
         }
 
         deckLines.push({ count, name });
-        const known = cardCatalog.some((card) => card.name.toLowerCase() === name.toLowerCase());
-        if (!known) {
-            unknownCardNames.add(name);
-        }
     }
 
     const deckSlots = deckLines.map((line) => {
-        const card = cardCatalog.find((item) => item.name.toLowerCase() === line.name.toLowerCase());
+        const match = resolveCardName(line.name, cardCatalog);
+        if (!match.card) {
+            unknownCardNames.add(line.name);
+        }
+
         return {
-            cardId: card?.id ?? `unknown:${line.name}`,
+            cardId: match.card?.id ?? `unknown:${line.name}`,
             count: line.count,
             name: line.name,
+            resolvedName: match.card?.name,
+            matchQuality: match.matchQuality,
+            typeLine: match.card?.typeLine,
         };
     });
 

@@ -4,9 +4,10 @@
     "version": "0.1.0",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "start": "vite",
         "build": "tsc && vite build",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "fetch-mtgjson": "node ./scripts/fetch-mtgjson.cjs"
     },
     "dependencies": {
         "@emotion/react": "^11.12.0",
@@ -20,6 +21,8 @@
         "@types/react": "^18.3.0",
         "@types/react-dom": "^18.3.0",
         "@vitejs/plugin-react": "^4.3.0",
+        "mtgjson": "^3.8.1",
+        "stream-json": "^2.1.0",
         "typescript": "^5.6.2",
         "vite": "^5.4.0"
     },

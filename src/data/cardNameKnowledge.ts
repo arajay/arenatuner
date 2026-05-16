@@ -1,0 +1,18 @@
+export const cardNameKnowledge: Record<string, string> = {
+    'bloodchiefs thirst': "Bloodchief's Thirst",
+    'karn the great creator': 'Karn, the Great Creator',
+    'oko thief of crowns': 'Oko, Thief of Crowns',
+    'teferi time raveler': 'Teferi, Time Raveler',
+    'lurrus of the dream den': 'Lurrus of the Dream-Den',
+    'fable of the mirror breaker': 'Fable of the Mirror-Breaker',
+    'fabled passage': 'Fabled Passage',
+    'watery grave': 'Watery Grave',
+    'expressive iteration': 'Expressive Iteration',
+    'thoughtseize': 'Thoughtseize',
+    'bloodchiefs_thirst': "Bloodchief's Thirst",
+    'brainstorm': 'Brainstorm',
+    'opt': 'Opt',
+    'solitude': 'Solitude',
+    'plains': 'Plains',
+    'island': 'Island',
+};
