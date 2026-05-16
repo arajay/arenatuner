@@ -1,16 +1,24 @@
 export interface CardData {
     id: string;
     name: string;
-    mana: string;
-    color: string;
-    archetype: string;
-    rating: number;
+    mana?: string;
+    manaCost?: string;
+    color?: string;
+    colors?: string[];
+    archetype?: string;
+    typeLine?: string;
+    rarity?: string;
+    setCode?: string;
+    rating?: number;
 }
 
 export interface DeckSlot {
     cardId: string;
     count: number;
-    name?: string;
+    name: string;
+    resolvedName?: string;
+    matchQuality?: 'exact' | 'alias' | 'normalized' | 'fuzzy' | 'unknown';
+    typeLine?: string;
 }
 
 export interface ArenaDeckLine {

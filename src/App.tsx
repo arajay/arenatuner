@@ -20,7 +20,7 @@ import {
     Typography,
 } from '@mui/material';
 import { CardData, DeckSlot, ParseResult } from './types';
-import { sampleCardCatalog } from './data/sampleCardCatalog';
+import historicCards from './data/mtgjson/historic-cards.json';
 import { parseArenaDeckExport } from './lib/arenaDeckParser';
 import { generateBo1Advice } from './lib/tuning';
 
@@ -42,7 +42,7 @@ const sampleDeckText = `4 Fable of the Mirror-Breaker
 2 Watery Grave
 4 Fabled Passage`;
 
-const initialParse = parseArenaDeckExport(sampleDeckText, sampleCardCatalog);
+const initialParse = parseArenaDeckExport(sampleDeckText, historicCards as CardData[]);
 
 function App() {
     const [deckText, setDeckText] = useState(sampleDeckText);
@@ -53,7 +53,7 @@ function App() {
     const deckItems = useMemo(
         () =>
             parseResult.deckSlots.map((slot) => {
-                const card = sampleCardCatalog.find((item) => item.id === slot.cardId);
+                const card = (historicCards as CardData[]).find((item) => item.id === slot.cardId);
                 return {
                     ...slot,
                     card,
@@ -66,12 +66,12 @@ function App() {
     const uniqueCards = parseResult.deckSlots.length;
 
     const handleParse = () => {
-        setParseResult(parseArenaDeckExport(deckText, sampleCardCatalog));
+        setParseResult(parseArenaDeckExport(deckText, historicCards as CardData[]));
     };
 
     const handleLoadSample = () => {
         setDeckText(sampleDeckText);
-        setParseResult(parseArenaDeckExport(sampleDeckText, sampleCardCatalog));
+        setParseResult(parseArenaDeckExport(sampleDeckText, historicCards as CardData[]));
     };
 
     return (
@@ -86,45 +86,45 @@ function App() {
             </AppBar>
 
             <Container sx={{ py: 4 }}>
-                <Stack spacing={4}>
-                    <Paper sx={{ p: 3 }}>
-                        <Typography variant="h5" gutterBottom>
-                            Import MTG Arena deck export
-                        </Typography>
-                        <Typography color="text.secondary" gutterBottom>
-                            Paste the raw deck export text from Arena into the field below. The app will parse your deck lines and provide BO1 tuning advice.
-                        </Typography>
-                        <TextField
-                            value={deckText}
-                            onChange={(event) => setDeckText(event.target.value)}
-                            label="Arena deck export"
-                            placeholder="4 Fable of the Mirror-Breaker"
-                            multiline
-                            minRows={10}
-                            fullWidth
-                            variant="outlined"
-                        />
-                        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-                            <Button variant="contained" onClick={handleParse}>
-                                Parse deck
-                            </Button>
-                            <Button variant="outlined" onClick={handleLoadSample}>
-                                Load sample deck
-                            </Button>
-                        </Stack>
-                        {parseResult.warnings.length > 0 && (
-                            <Stack spacing={1} sx={{ mt: 2 }}>
-                                {parseResult.warnings.map((warning, index) => (
-                                    <Alert key={index} severity="warning">
-                                        {warning}
-                                    </Alert>
-                                ))}
-                            </Stack>
-                        )}
-                    </Paper>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                        <Stack spacing={3}>
+                            <Paper sx={{ p: 3 }}>
+                                <Typography variant="h5" gutterBottom>
+                                    Import MTG Arena deck export
+                                </Typography>
+                                <Typography color="text.secondary" gutterBottom>
+                                    Paste the raw deck export text from Arena into the field below. The app will parse your deck lines and provide BO1 tuning advice.
+                                </Typography>
+                                <TextField
+                                    value={deckText}
+                                    onChange={(event) => setDeckText(event.target.value)}
+                                    label="Arena deck export"
+                                    placeholder="4 Fable of the Mirror-Breaker"
+                                    multiline
+                                    minRows={16}
+                                    fullWidth
+                                    variant="outlined"
+                                />
+                                <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                                    <Button variant="contained" onClick={handleParse}>
+                                        Parse deck
+                                    </Button>
+                                    <Button variant="outlined" onClick={handleLoadSample}>
+                                        Load sample deck
+                                    </Button>
+                                </Stack>
+                                {parseResult.warnings.length > 0 && (
+                                    <Stack spacing={1} sx={{ mt: 2 }}>
+                                        {parseResult.warnings.map((warning, index) => (
+                                            <Alert key={index} severity="warning">
+                                                {warning}
+                                            </Alert>
+                                        ))}
+                                    </Stack>
+                                )}
+                            </Paper>
 
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} md={5}>
                             <Paper sx={{ p: 3 }}>
                                 <Typography variant="h6" gutterBottom>
                                     Deck summary
@@ -139,51 +139,55 @@ function App() {
                                         {parseResult.unknownCardNames.join(', ')}
                                     </Typography>
                                 )}
-                                <Divider sx={{ my: 2 }} />
-                                <Typography variant="h6" gutterBottom>
-                                    Tuning advice
-                                </Typography>
-                                <Stack spacing={1}>
-                                    {advice.map((item, index) => (
-                                        <Alert key={index} severity={item.severity}>
-                                            {item.message}
-                                        </Alert>
-                                    ))}
-                                </Stack>
-                            </Paper>
-                        </Grid>
-
-                        <Grid item xs={12} md={7}>
-                            <Paper sx={{ p: 3 }}>
-                                <Typography variant="h6" gutterBottom>
-                                    Parsed deck cards
-                                </Typography>
-                                <TableContainer>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Name</TableCell>
-                                                <TableCell>Mana</TableCell>
-                                                <TableCell>Archetype</TableCell>
-                                                <TableCell align="center">Count</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {deckItems.map((slot) => (
-                                                <TableRow key={`${slot.cardId}-${slot.name}-${slot.count}`}>
-                                                    <TableCell>{slot.name}</TableCell>
-                                                    <TableCell>{slot.card?.mana ?? '—'}</TableCell>
-                                                    <TableCell>{slot.card?.archetype ?? 'Unknown'}</TableCell>
-                                                    <TableCell align="center">{slot.count}</TableCell>
-                                                </TableRow>
+                                {advice.length > 0 && (
+                                    <>
+                                        <Divider sx={{ my: 2 }} />
+                                        <Typography variant="h6" gutterBottom>
+                                            Tuning advice
+                                        </Typography>
+                                        <Stack spacing={1}>
+                                            {advice.map((item, index) => (
+                                                <Alert key={index} severity={item.severity}>
+                                                    {item.message}
+                                                </Alert>
                                             ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                        </Stack>
+                                    </>
+                                )}
                             </Paper>
-                        </Grid>
+                        </Stack>
                     </Grid>
-                </Stack>
+
+                    <Grid item xs={12} md={6}>
+                        <Paper sx={{ p: 3 }}>
+                            <Typography variant="h6" gutterBottom>
+                                Parsed deck cards
+                            </Typography>
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Name</TableCell>
+                                            <TableCell>Mana</TableCell>
+                                            <TableCell>Archetype</TableCell>
+                                            <TableCell align="center">Count</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {deckItems.map((slot) => (
+                                            <TableRow key={`${slot.cardId}-${slot.name}-${slot.count}`}>
+                                                <TableCell>{slot.name}</TableCell>
+                                                <TableCell>{slot.card?.manaCost ?? slot.card?.mana ?? '—'}</TableCell>
+                                                <TableCell>{slot.card?.typeLine ?? slot.card?.archetype ?? 'Unknown'}</TableCell>
+                                                <TableCell align="center">{slot.count}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Paper>
+                    </Grid>
+                </Grid>
             </Container>
         </Box>
     );
