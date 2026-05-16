@@ -3,10 +3,14 @@ import { ArenaDeckLine, CardData, ParsedDeck, ParseResult } from '../types';
 const countLineRegex = /^(\d+)\s+x?\s*(.+)$/i;
 
 export function parseArenaDeckExport(rawText: string, cardCatalog: CardData[]): ParseResult {
-    const lines = rawText.split(/\r?\n/);
+    let lines = rawText.split(/\r?\n/);
     const deckLines: ArenaDeckLine[] = [];
     const warnings: string[] = [];
     const unknownCardNames = new Set<string>();
+
+    if (lines.length > 0 && /^deck\s*:?$/i.test(lines[0].trim())) {
+        lines = lines.slice(1);
+    }
 
     for (const rawLine of lines) {
         const line = rawLine.trim();
