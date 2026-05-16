@@ -1,0 +1,20 @@
+Deck
+4 Deep-Cavern Bat (LCI) 102
+20 Swamp (FIN) 300
+4 Sanguine Soothsayer (Y25) 11
+4 Starscape Cleric (BLB) 116
+2 Liliana of the Veil (DMU) 97
+2 Exquisite Blood (JMP) 231
+3 Barren Moor (ONS) 312
+2 The End (WOE) 87
+4 Duress (STA) 29
+2 Damnation (SPG) 68
+1 The Elderspell (WAR) 89
+1 Nykthos, Shrine to Nyx (THS) 223
+1 Sword of Light and Shadow (MMA) 217
+4 Gurmag Swiftwing (KTK) 74
+1 Sword of Body and Mind (SOM) 208
+1 Vorpal Sword (AFR) 124
+2 Davriel, Rogue Shadowmage (WAR) 83
+1 Buster Sword (FIN) 255
+1 Sword of Fire and Ice (SPG) 62
